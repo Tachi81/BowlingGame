@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BowlingGame
+namespace BowlingGame.Tests
 {
     public class Class1
     {
