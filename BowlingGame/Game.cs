@@ -8,6 +8,24 @@ namespace BowlingGame
 {
     public class Game
     {
+        private List<Roll> _rolls;
 
+        public Game()
+        {
+            _rolls = new List<Roll>();
+        }
+
+        public void Roll(int pins)
+        {
+            _rolls.Add(new Roll()
+            {
+                KnockedPinsCount = pins
+            });
+        }
+
+        public int TotalScores()
+        {
+            return -1;
+        }
     }
 }
