@@ -23,6 +23,11 @@ namespace BowlingGame
             });
         }
 
+        public int MaxNumberOfRolls()
+        {
+            return 1;
+        }
+
         public int TotalScores()
         {
             return _rolls.Sum(r=>r.KnockedPinsCount);
