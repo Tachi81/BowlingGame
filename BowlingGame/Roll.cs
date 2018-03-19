@@ -1,7 +1,8 @@
 ﻿namespace BowlingGame
 {
-    internal class Roll
+    public class Roll
     {
         public int KnockedPinsCount;
+     
     }
 }
