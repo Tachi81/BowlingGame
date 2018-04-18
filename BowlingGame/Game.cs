@@ -1,50 +1,124 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace BowlingGame
 {
     public class Game
     {
-        private List<Roll> _rolls;
-        private List<Turn> _turns;
+        List<Roll> _rolls;
 
         public Game()
         {
             _rolls = new List<Roll>();
-            _turns = new List<Turn>();
         }
 
         public void Roll(int pins)
         {
-            if (!_turns.Any()|| _turns.Last().RollsInThisTurn.Count == 2)
-            {
-                _turns.Add(new Turn());
-            }
-
-            if (_turns.Last().RollsInThisTurn.Count == 2 && _turns.Count ==9)
-            {
-                
-            }
-            
-            var roll= new Roll()
+            _rolls.Add(new Roll()
             {
                 KnockedPinsCount = pins
-            };
-            _turns.Last().RollsInThisTurn.Add(roll);
-            _rolls.Add(roll);
-        }
-
-        public int MaxNumberOfRolls()
-        {
-            return 20;
+            });
         }
 
         public int TotalScores()
         {
-            return _rolls.Sum(r=>r.KnockedPinsCount);
+            int result = 0;
+            int rollsCounterInFrame = 1;
+            int frameCounter = 1;
+
+            for (int i = 0; i < _rolls.Count; i++)
+            {
+                while (frameCounter < 10)
+                {
+                    if (IsStrike(i))
+                    {
+                        if (i < _rolls.Count - 2)
+                        {
+                            result += _rolls[i].KnockedPinsCount + _rolls[i + 1].KnockedPinsCount +
+                                      _rolls[i + 2].KnockedPinsCount;
+                            StartNextFrame(ref frameCounter, ref rollsCounterInFrame, ref i);
+
+                        }
+                    }
+                    else if (IsSpare(i) && rollsCounterInFrame % 2 == 0)
+                    {
+                        result += _rolls[i].KnockedPinsCount + _rolls[i + 1].KnockedPinsCount;
+
+                        StartNextFrame(ref frameCounter, ref rollsCounterInFrame, ref i);
+
+
+                    }
+                    else
+                    {
+                        result += _rolls[i].KnockedPinsCount;
+                        if (rollsCounterInFrame % 2 == 0)
+                        {
+                            StartNextFrame(ref frameCounter, ref rollsCounterInFrame, ref i);
+                        }
+                        else
+                        {
+                            rollsCounterInFrame++;
+                            i++;
+                        }
+                    }
+                }
+
+                while (frameCounter == 10)
+                {
+                    if (IsStrike(i) && rollsCounterInFrame == 1)
+                    {
+                        result += _rolls[i].KnockedPinsCount + _rolls[i + 1].KnockedPinsCount +
+                                  _rolls[i + 2].KnockedPinsCount;
+                        frameCounter++;
+                        break;
+                    }
+
+                    if (IsSpare(i) && rollsCounterInFrame == 2)
+                    {
+                        result += _rolls[i].KnockedPinsCount + _rolls[i + 1].KnockedPinsCount;
+                        frameCounter++;
+                        break;
+                    }
+
+                    result += _rolls[i].KnockedPinsCount;
+                    if (rollsCounterInFrame % 2 == 0)
+                    {
+                        frameCounter++;
+                        break;
+                    }
+                    rollsCounterInFrame++;
+                    i++;
+                }
+            }
+
+
+            return result;
+        }
+
+
+
+        private void StartNextFrame(ref int frameCounter, ref int rollsCounter, ref int i)
+
+        {
+            frameCounter++;
+            rollsCounter = 1;
+            i++;
+        }
+
+
+        private bool IsStrike(int i)
+        {
+            return _rolls[i].KnockedPinsCount == 10;
+        }
+
+
+        private bool IsSpare(int i)
+        {
+            if (i > 0)
+            {
+                return _rolls[i].KnockedPinsCount + _rolls[i - 1].KnockedPinsCount == 10;
+            }
+
+            return false;
         }
     }
 }
